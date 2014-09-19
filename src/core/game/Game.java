@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 import com.engine.state.State;
 
-import core.item.Inventory;
+import core.game.item.Inventory;
 
 public class Game extends State {
 	

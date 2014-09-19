@@ -1,4 +1,4 @@
-package core.item;
+package core.game.item;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -19,7 +19,7 @@ public class Inventory {
 	int slotX, slotY;
 	boolean[] slotMarks = new boolean[16];
 
-	public boolean inventoryShowing = false;
+	public static boolean inventoryShowing = false;
 	boolean b = false;
 
 	public Inventory() {
@@ -49,6 +49,7 @@ public class Inventory {
 			g.drawImage(inventorySelectImage, (339 + slotX * 76) + 14 * slotX,
 					(187 + slotY * 76) + 14 * slotY, 76, 76, null);
 		}
+		ItemHandler.testItem.render(g);
 	}
 
 	public void selectBox() {
