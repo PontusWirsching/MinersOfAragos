@@ -3,14 +3,17 @@ package core.game;
 import com.engine.LEngine;
 import com.engine.state.StateHandler;
 
+import core.tools.TextureLoader;
+
 public class Start extends LEngine {
 
 	public Start(int width, int height, String title) {
 		super(width, height, title);
 		
 		StateHandler.addState(new Game("GAME"));
-		
 		StateHandler.setState("GAME");
+		
+		TextureLoader.load();
 		
 		skipIntro();
 		start();
