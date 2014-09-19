@@ -8,6 +8,8 @@ public class Game extends State {
 
 	public static int xOff, yOff;
 	
+	public static final int TILE_DISPLAY_SIZE = 96;
+	
 	public Game(String name) {
 		super(name);
 	}

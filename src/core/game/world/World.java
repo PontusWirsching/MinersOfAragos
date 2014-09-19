@@ -11,10 +11,12 @@ public class World {
 
 	public ArrayList<Entity> entities = new ArrayList<>();
 
-	
-	
-	public World() {
+	public int width = 4, height = 4;
 
+	public Tile[][] tiles;
+
+	public World() {
+		tiles = new Tile[width][height];
 	}
 
 	public Entity getEntity(int index) {
@@ -33,6 +35,15 @@ public class World {
 	}
 
 	public void render(Graphics g) {
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (tiles[x][y] != null) {
+					tiles[x][y].render(g, x, y);
+				}
+			}
+		}
+
 		for (Entity e : entities) {
 			if (e != null) {
 				e.render(g);
