@@ -1,28 +1,63 @@
 package core.game.item;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class Slot {
 
-	public int item = -1;
+	public int itemID = -1;
+	public int amount = 0;
+
+	public String itemName = "";
 
 	public Slot() {
 
 	}
 
-	public void setItem(int item) {
-		this.item = item;
+	public void setItemData(int itemID, int amount) {
+		this.itemID = itemID;
+		setAmount(amount);
 	}
 
-	public int getItem() {
-		return item;
+	public int getItemID() {
+		return itemID;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public String getItemName() {
+		return ItemHandler.inventoryItems.get(itemID).itemName;
+	}
+
+	public int getMaxStack() {
+		return ItemHandler.inventoryItems.get(itemID).maxStack;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 
 	public void render(Graphics g, int x, int y) {
-		if (item != -1) {
-			g.drawImage(ItemHandler.loadedItems.get(item).image, x, y, 65, 65,
-					null);
+
+		// Drawing Items In The Inventory
+
+		if (itemID != -1) {
+			g.drawImage(ItemHandler.inventoryItems.get(itemID).image, x, y, 65,
+					65, null);
+
+			// Adding Amount String Above Item
+
+			g.setFont(new Font("Arial", Font.BOLD, 13));
+			g.setColor(Color.WHITE);
+			g.drawString("" + amount, x, y);
 		}
+	}
+
+	public void delAmount(int amount) {
+		this.amount = this.amount - amount;
 	}
 
 }
