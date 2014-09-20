@@ -108,7 +108,7 @@ public class Inventory {
 
 		if (inventoryShowing) {
 			if (Keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !toggle) {
-				addInventoryItem(random.nextInt(6), 1);
+				addInventoryItem(random.nextInt(7), 1);
 				toggle = true;
 			} else if (Keyboard.isKeyPressed(KeyEvent.VK_SPACE) == false
 					&& toggle) {
