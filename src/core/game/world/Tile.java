@@ -9,11 +9,14 @@ public class Tile {
 
 	public String id;
 	public Image image;
+	public int color;
 	public boolean solid = false;
 
-	public Tile(String id, Image image) {
+	public Tile(String id, Image image, int color) {
 		this.id = id;
 		this.image = image;
+		this.color = color;
+		Tiles.loadedTiles.add(this);
 	}
 
 	public Tile setSolid(boolean b) {
