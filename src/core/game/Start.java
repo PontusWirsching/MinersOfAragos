@@ -11,6 +11,8 @@ public class Start extends LEngine {
 		super(width, height, title);
 		TextureLoader.load();
 
+		TextureLoader.load();
+		
 		StateHandler.addState(new Game("GAME"));
 		StateHandler.setState("GAME");
 		
