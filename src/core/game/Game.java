@@ -9,6 +9,8 @@ import core.game.item.Inventory;
 
 public class Game extends State {
 	
+	public int itemID = -1;
+	
 	private Inventory inventory = new Inventory();
 
 	public static int xOff, yOff;
