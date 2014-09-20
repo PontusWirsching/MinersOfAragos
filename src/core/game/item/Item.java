@@ -5,18 +5,19 @@ import java.awt.Image;
 
 public class Item {
 
-	protected int id, maxStack;
+	protected int itemID, maxStack;
 	protected String itemName;
 	protected Image image;
 
-	public Item(int id, String itemName, int maxStack, Image image) {
-		this.id = id;
+	public Item(int itemID, String itemName, int maxStack, Image image) {
+		this.itemID = itemID;
 		this.maxStack = maxStack;
 		this.image = image;
+		ItemHandler.loadedItems.add(this);
 	}
 
 	public int getId() {
-		return id;
+		return itemID;
 	}
 
 	public int getMaxStack() {
@@ -28,8 +29,6 @@ public class Item {
 	}
 
 	public void render(Graphics g) {
-		if (Inventory.inventoryShowing) {
-			g.drawImage(this.image, 342, 192, 65, 65, null);
-		}
+
 	}
 }
