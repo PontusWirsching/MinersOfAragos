@@ -19,7 +19,7 @@ public class World {
 	public Tile[][] tiles;
 
 	public World() {
-		load(Loader.loadBufferedImage("/worlds/world.png"));
+		load(Loader.loadBufferedImage("/world.png"));
 	}
 
 	public Entity getEntity(int index) {
