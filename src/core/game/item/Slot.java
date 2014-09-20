@@ -1,6 +1,5 @@
 package core.game.item;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 public class Slot {
@@ -24,10 +23,6 @@ public class Slot {
 			g.drawImage(ItemHandler.loadedItems.get(item).image, x, y, 65, 65,
 					null);
 		}
-		
-		g.setColor(Color.RED);
-		g.drawString("" + item, x, y);
-		
 	}
 
 }
