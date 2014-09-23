@@ -151,6 +151,7 @@ public class Inventory {
 		} else if (!Keyboard.isKeyPressed(KeyEvent.VK_I) && b) {
 			b = false;
 		}
+
 		selectBox();
 		currency.update();
 	}
@@ -197,63 +198,52 @@ public class Inventory {
 
 		// Render Item Information
 
-		if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
-			showingItemDetails = true;
-		} else {
-			showingItemDetails = false;
+		if (inventoryShowing) {
+			if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
+				showingItemDetails = true;
+			} else {
+				showingItemDetails = false;
+			}
 		}
 
-		if (slotSelectedX == slotX && slotSelectedY == slotY) {
-			if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
-				g.setFont(new Font("Arial", Font.BOLD, 12));
-				g.setColor(Color.WHITE);
-				String s1 = slots[slotSelectedX + slotSelectedY * 4]
-						.getItemName().toUpperCase();
-				int stringLength = (int) g.getFontMetrics()
-						.getStringBounds(s1, g).getWidth();
-				int start = 127 / 2 - stringLength / 2;
-				g.drawString(s1, start + Slot.getIX() + 121, Slot.getIY() - 250);
-				g.drawImage(
-						slots[slotSelectedX + slotSelectedY * 4].getImage(),
-						Slot.getIX() + 143, Slot.getIY() - 212, 76, 76, null);
-				g.setFont(new Font("Arial", Font.BOLD, 14));
-				g.drawString("ITEM ID: "
-						+ slots[slotSelectedX + slotSelectedY * 4].getItemID(),
-						Slot.getIX() + 123, Slot.getIY() - 97);
-				g.drawString(
-						"MAX: "
-								+ slots[slotSelectedX + slotSelectedY * 4]
-										.getMaxStack(), Slot.getIX() + 123,
-						Slot.getIY() - 75);
+		if (inventoryShowing) {
+			if (slotSelectedX == slotX && slotSelectedY == slotY) {
+				if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
+					g.setFont(new Font("Arial", Font.BOLD, 12));
+					g.setColor(Color.WHITE);
+					String s1 = slots[slotSelectedX + slotSelectedY * 4]
+							.getItemName().toUpperCase();
+					String s2 = slots[slotSelectedX + slotSelectedY * 4]
+							.getDesc();
+					int stringLength = (int) g.getFontMetrics()
+							.getStringBounds(s1, g).getWidth();
+					int start = 127 / 2 - stringLength / 2;
+					g.drawString(s1, start + Slot.getIX() + 121,
+							Slot.getIY() - 250);
+					g.drawImage(
+							slots[slotSelectedX + slotSelectedY * 4].getImage(),
+							Slot.getIX() + 143, Slot.getIY() - 212, 76, 76,
+							null);
+					g.setFont(new Font("Arial", Font.BOLD, 13));
+				
+						//g.drawString(slots[slotSelectedX + slotSelectedY * 4].getDesc(), 635, 367);
+					drawString(g, s2, start + 601, 354);
+				}
 			}
 		}
 	}
-
-	boolean holding = false;
+	
+	public void drawString(Graphics g, String s, int x, int y) {
+		for(String newLine : s.split("-n")) {
+			g.drawString(newLine, x, y += g.getFontMetrics().getHeight());
+		}
+	}
 
 	public void selectBox() {
 
 		// Mouse Input Selecting Inventory Boxes
 
 		if (inventoryShowing) {
-
-			if (Mouse.getButton() == Mouse.BUTTON_LEFT && !p) {
-				p = true;
-				if (r.contains(Mouse.getX(), Mouse.getY())) {
-					mouseOnX = Mouse.getX() - xOff;
-					mouseOnY = Mouse.getY() - yOff;
-					holding = true;
-				}
-				System.out.println(mouseOnX + ", " + mouseOnY);
-			} else if (Mouse.getButton() != Mouse.BUTTON_LEFT && p) {
-				p = false;
-				holding = false;
-			}
-
-			if (holding) {
-				xOff = Mouse.getX() - mouseOnX;
-				yOff = Mouse.getY() - mouseOnY;
-			}
 
 			if (Mouse.getButton() == 1) {
 				int x = 0, y = 0;

@@ -11,6 +11,7 @@ import com.engine.state.StateHandler;
 
 import core.tools.TextureLoader;
 
+@SuppressWarnings("resource")
 public class Start extends LEngine {
 
 	public static final String PATH = System.getenv("APPDATA") + "\\LostSourceStudios\\MinersOfAragos";

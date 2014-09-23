@@ -40,6 +40,10 @@ public class Slot {
 	public int getMaxStack() {
 		return ItemHandler.inventoryItems.get(itemID).maxStack;
 	}
+	
+	public String getDesc() {
+		return ItemHandler.inventoryItems.get(itemID).getDesc();
+	}
 
 	public void setAmount(int amount) {
 		this.amount = amount;

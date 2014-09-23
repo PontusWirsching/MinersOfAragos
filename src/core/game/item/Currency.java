@@ -35,7 +35,10 @@ public class Currency {
 	public void render(Graphics g) {
 		g.setFont(new Font("Arial", Font.BOLD, 12));
 		g.setColor(Color.WHITE);
-		g.drawString("" + currentCurrency, + Slot.getIX() + 188, Slot.getIY() + 37);
+		String s = ("" + currentCurrency);
+		int stringLength = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
+		int start = 47 / 2 - stringLength / 2;
+		g.drawString("" + currentCurrency, + start + Slot.getIX() + 188, Slot.getIY() + 37);
 		g.drawImage(TextureLoader.itemSpriteSheet.get("LARGE_COIN_STACK_ITEM"), Slot.getIX() + 124, Slot.getIY() + 10, 45, 45, null);
 	}
 
