@@ -1,11 +1,20 @@
 package core.game.world;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import com.engine.tools.Loader;
+import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.TileLayer;
+import tiled.io.TMXMapReader;
+import tiled.view.MapRenderer;
+import tiled.view.OrthogonalRenderer;
 
+import com.engine.LEngine;
+
+import core.game.Start;
 import core.game.entities.Entity;
 
 public class World {
@@ -16,33 +25,38 @@ public class World {
 
 	public int width = 4, height = 4;
 
-	public Tile[][] tiles;
+	public Map map;
+	public MapRenderer mapRenderer;
 
 	public World() {
-		load(Loader.loadBufferedImage("/world.png"));
+		load("level.tmx");
 	}
 
 	public Entity getEntity(int index) {
 		return entities.get(index);
 	}
 
-	public void load(BufferedImage image) {
-		width = image.getWidth();
-		height = image.getHeight();
-		tiles = new Tile[width][height];
-
-		int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
-
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				for (Tile t : Tiles.loadedTiles) {
-					if (pixels[x + y * width] == t.color) {
-						tiles[x][y] = t;
-					}
-				}
-			}
+	public void load(String path) {
+		try {
+			TMXMapReader mapReader = new TMXMapReader();
+			map = mapReader.readMap(Start.PATH + "\\Worlds\\" + path);
+		} catch (Exception e) {
+			System.out.println("Error while reading the map:\n" + e.getMessage());
+			return;
 		}
+		width = map.getWidth();
+		height = map.getHeight();
+		mapRenderer = createRenderer(map);
 
+	}
+
+	private static MapRenderer createRenderer(Map map) {
+		switch (map.getOrientation()) {
+		case Map.ORIENTATION_ORTHOGONAL:
+			return new OrthogonalRenderer(map);
+		default:
+			return null;
+		}
 	}
 
 	public void update() {
@@ -56,13 +70,23 @@ public class World {
 		}
 	}
 
-	public void render(Graphics g) {
+	public void render(Graphics g2) {
 
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (tiles[x][y] != null) {
-					tiles[x][y].render(g, x, y);
-				}
+		int scale = 2;
+		
+		BufferedImage image = new BufferedImage(LEngine.WIDTH / scale, LEngine.HEIGHT /scale, BufferedImage.TYPE_INT_RGB);
+		
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		
+		g.setClip(0, 0, LEngine.WIDTH / scale, LEngine.HEIGHT / scale);
+
+		//NOTE - When player gets added, show mig.
+		
+
+		
+		for (MapLayer layer : map) {
+			if (layer instanceof TileLayer) {
+				mapRenderer.paintTileLayer((Graphics2D) g, (TileLayer) layer);
 			}
 		}
 
@@ -71,6 +95,8 @@ public class World {
 				e.render(g);
 			}
 		}
+		
+		g2.drawImage(image, 0, 0, LEngine.WIDTH, LEngine.HEIGHT, null);
 	}
 
 }
