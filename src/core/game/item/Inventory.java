@@ -34,11 +34,15 @@ public class Inventory {
 
 	boolean[] slotMarks = new boolean[16];
 
-	public static boolean inventoryShowing = true;
+	public static boolean inventoryShowing = false;
 	public static boolean boxSelected = false;
 	boolean b = false;
 
+	public boolean showingItemDetails = false;
+
 	public static Slot[] slots;
+
+	private Currency currency = new Currency();
 
 	public Inventory() {
 		inventorySelectImage = Loader.loadImage("/icons/inventorySelect.png");
@@ -99,6 +103,7 @@ public class Inventory {
 
 	boolean toggle = false;
 	boolean bo = false;
+	boolean boo = false;
 
 	public void update() {
 
@@ -108,11 +113,22 @@ public class Inventory {
 
 		if (inventoryShowing) {
 			if (Keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !toggle) {
-				addInventoryItem(random.nextInt(7), 1);
+				addInventoryItem(random.nextInt(4), 1);
 				toggle = true;
 			} else if (Keyboard.isKeyPressed(KeyEvent.VK_SPACE) == false
 					&& toggle) {
 				toggle = false;
+			}
+		}
+
+		// Adding Gold To Gold Variable
+
+		if (inventoryShowing) {
+			if (Keyboard.isKeyPressed(KeyEvent.VK_M) && !boo) {
+				currency.addCurrency(10000);
+				boo = true;
+			} else if (Keyboard.isKeyPressed(KeyEvent.VK_M) == false && boo) {
+				boo = false;
 			}
 		}
 
@@ -128,6 +144,7 @@ public class Inventory {
 		}
 
 		// Inventory Logic
+
 		if (Keyboard.isKeyPressed(KeyEvent.VK_I) && !b) {
 			b = true;
 			inventoryShowing = !inventoryShowing;
@@ -135,42 +152,89 @@ public class Inventory {
 			b = false;
 		}
 		selectBox();
+		currency.update();
 	}
 
 	public void render(Graphics g) {
-
 		// Rendering Inventory
 
 		if (inventoryShowing) {
-			g.drawImage(TextureLoader.inventoryGui.get("INVENTORYGUI"), xOff,
-					yOff, 598, 400, null);
-		}
+			if (showingItemDetails) {
+				g.drawImage(TextureLoader.inventoryGui.get("INVENTORYGUI"),
+						xOff, yOff, 598, 400, null);
+			} else if (!showingItemDetails) {
+				g.drawImage(TextureLoader.inventoryGuiTemplate
+						.get("INVENTORYGUITEMPLATE"), xOff, yOff, 598, 400,
+						null);
+			}
 
-		// Rendering Inventory Selection Icon
+			// Rendering Inventory Selection Icon
 
-		if (inventoryShowing) {
-			g.drawImage(inventorySelectImage, (slotX * 76) + 14 * slotX + xOff
-					+ 27, (slotY * 76) + 14 * slotY + yOff + 27, 76, 76, null);
+			if (inventoryShowing) {
+				g.drawImage(inventorySelectImage, (slotX * 76) + 14 * slotX
+						+ xOff + 27, (slotY * 76) + 14 * slotY + yOff + 27, 76,
+						76, null);
 
-			// Rendering Inventory Items
+				// Rendering Inventory Items
 
-			for (int x = 0; x < 4; x++) {
-				for (int y = 0; y < 4; y++) {
-					slots[x + y * 4].render(g, (x * 76) + 14 * x + xOff + 32,
-							(y * 76) + 14 * y + yOff + 33);
+				for (int x = 0; x < 4; x++) {
+					for (int y = 0; y < 4; y++) {
+						slots[x + y * 4].render(g, (x * 76) + 14 * x + xOff
+								+ 32, (y * 76) + 14 * y + yOff + 33);
+					}
 				}
+			}
+
+			if (Inventory.getSlotSelected()) {
+				g.setFont(new Font("Arial", Font.BOLD, 13));
+				g.setColor(Color.WHITE);
 			}
 		}
 
-		if (Inventory.getSlotSelected()) {
-			g.setFont(new Font("Arial", Font.BOLD, 13));
-			g.setColor(Color.WHITE);
+		if (inventoryShowing) {
+			currency.render(g);
 		}
 
+		// Render Item Information
+
+		if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
+			showingItemDetails = true;
+		} else {
+			showingItemDetails = false;
+		}
+
+		if (slotSelectedX == slotX && slotSelectedY == slotY) {
+			if (slots[slotSelectedX + slotSelectedY * 4].getItemID() != -1) {
+				g.setFont(new Font("Arial", Font.BOLD, 12));
+				g.setColor(Color.WHITE);
+				String s1 = slots[slotSelectedX + slotSelectedY * 4]
+						.getItemName().toUpperCase();
+				int stringLength = (int) g.getFontMetrics()
+						.getStringBounds(s1, g).getWidth();
+				int start = 127 / 2 - stringLength / 2;
+				g.drawString(s1, start + Slot.getIX() + 121, Slot.getIY() - 250);
+				g.drawImage(
+						slots[slotSelectedX + slotSelectedY * 4].getImage(),
+						Slot.getIX() + 143, Slot.getIY() - 212, 76, 76, null);
+				g.setFont(new Font("Arial", Font.BOLD, 14));
+				g.drawString("ITEM ID: "
+						+ slots[slotSelectedX + slotSelectedY * 4].getItemID(),
+						Slot.getIX() + 123, Slot.getIY() - 97);
+				g.drawString(
+						"MAX: "
+								+ slots[slotSelectedX + slotSelectedY * 4]
+										.getMaxStack(), Slot.getIX() + 123,
+						Slot.getIY() - 75);
+			}
+		}
 	}
 
+	boolean holding = false;
+
 	public void selectBox() {
+
 		// Mouse Input Selecting Inventory Boxes
+
 		if (inventoryShowing) {
 
 			if (Mouse.getButton() == Mouse.BUTTON_LEFT && !p) {
@@ -178,10 +242,17 @@ public class Inventory {
 				if (r.contains(Mouse.getX(), Mouse.getY())) {
 					mouseOnX = Mouse.getX() - xOff;
 					mouseOnY = Mouse.getY() - yOff;
+					holding = true;
 				}
 				System.out.println(mouseOnX + ", " + mouseOnY);
 			} else if (Mouse.getButton() != Mouse.BUTTON_LEFT && p) {
 				p = false;
+				holding = false;
+			}
+
+			if (holding) {
+				xOff = Mouse.getX() - mouseOnX;
+				yOff = Mouse.getY() - mouseOnY;
 			}
 
 			if (Mouse.getButton() == 1) {
@@ -209,10 +280,6 @@ public class Inventory {
 				slotSelectedY = slotY;
 				slotSelected = slotMarks[slot_index];
 				slotMarks[slot_index] = true;
-				if (r.contains(Mouse.getX(), Mouse.getY())) {
-					xOff = Mouse.getX() - mouseOnX;
-					yOff = Mouse.getY() - mouseOnY;
-				}
 
 			}
 

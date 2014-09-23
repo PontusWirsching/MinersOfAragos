@@ -23,4 +23,5 @@ public class Item {
 	public void render(Graphics g) {
 		
 	}
+	
 }
