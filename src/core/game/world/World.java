@@ -1,5 +1,6 @@
 package core.game.world;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 
 import tiled.core.Map;
 import tiled.core.MapLayer;
+import tiled.core.ObjectGroup;
+import tiled.core.Tile;
 import tiled.core.TileLayer;
 import tiled.io.TMXMapReader;
 import tiled.view.MapRenderer;
@@ -14,6 +17,7 @@ import tiled.view.OrthogonalRenderer;
 
 import com.engine.LEngine;
 
+import core.game.Game;
 import core.game.Start;
 import core.game.entities.Entity;
 
@@ -47,8 +51,11 @@ public class World {
 		width = map.getWidth();
 		height = map.getHeight();
 		mapRenderer = createRenderer(map);
+		o = new ObjectGroup(map);
 
 	}
+
+	ObjectGroup o;
 
 	private static MapRenderer createRenderer(Map map) {
 		switch (map.getOrientation()) {
@@ -70,23 +77,38 @@ public class World {
 		}
 	}
 
-	public void render(Graphics g2) {
+	public void render(Graphics g) {
 
 		int scale = 2;
-		
-		BufferedImage image = new BufferedImage(LEngine.WIDTH / scale, LEngine.HEIGHT /scale, BufferedImage.TYPE_INT_RGB);
-		
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		
-		g.setClip(0, 0, LEngine.WIDTH / scale, LEngine.HEIGHT / scale);
 
-		//NOTE - When player gets added, show mig.
-		
 
+
+//		g.setClip( -Game.xOff * 2, -Game.yOff * 2, LEngine.WIDTH / scale, LEngine.HEIGHT / scale);
+
+		// NOTE - When player gets added, show mig.
+
+		
 		
 		for (MapLayer layer : map) {
 			if (layer instanceof TileLayer) {
-				mapRenderer.paintTileLayer((Graphics2D) g, (TileLayer) layer);
+//				 mapRenderer.paintTileLayer((Graphics2D) g, (TileLayer)
+//				 layer);
+
+				for (int x = 0; x < layer.getWidth(); x++) {
+					for (int y = 0; y < layer.getHeight(); y++) {
+						Tile t = ((TileLayer) layer).getTileAt(x, y);
+						if (t != null) {
+							g.drawImage(t.getImage(), x * 64 - Game.xOff, y * 64 - Game.yOff, 64, 64, null);
+						
+							if (t.getProperties().containsKey("collision")) {
+								g.setColor(Color.red);
+								g.fillRect(x * 64 - Game.xOff, y * 64 - Game.yOff, 64, 64);
+							}
+					
+						}
+					}
+				}
+
 			}
 		}
 
@@ -95,8 +117,7 @@ public class World {
 				e.render(g);
 			}
 		}
-		
-		g2.drawImage(image, 0, 0, LEngine.WIDTH, LEngine.HEIGHT, null);
+
 	}
 
 }

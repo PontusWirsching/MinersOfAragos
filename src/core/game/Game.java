@@ -2,10 +2,12 @@ package core.game;
 
 import java.awt.Graphics;
 
+import com.engine.LEngine;
 import com.engine.state.State;
 
-import core.game.world.World;
 import core.game.item.Inventory;
+import core.game.world.Player;
+import core.game.world.World;
 
 public class Game extends State {
 	
@@ -19,15 +21,25 @@ public class Game extends State {
 	
 	public static World currentWorld;
 	
+	public static Player player;
+	
 	public Game(String name) {
 		super(name);
 		
 		currentWorld = new World();
 		
+		player = new Player();
+		
+		currentWorld.entities.add(player);
+		
 	}
 
 	@Override
 	public void update() {
+		
+		xOff = player.x - LEngine.WIDTH / 2;
+		yOff = player.y - LEngine.HEIGHT / 2;
+		
 		currentWorld.update();
 		inventory.update();
 	}
