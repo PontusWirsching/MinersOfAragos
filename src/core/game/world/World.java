@@ -83,32 +83,32 @@ public class World {
 
 
 
-//		g.setClip( -Game.xOff * 2, -Game.yOff * 2, LEngine.WIDTH / scale, LEngine.HEIGHT / scale);
+		g.setClip(0,0, LEngine.WIDTH, LEngine.HEIGHT);
 
 		// NOTE - When player gets added, show mig.
 
 		
+		g.setColor(Color.red);
+
+		int xo = Game.xOff;
+		int yo = Game.yOff;
 		
 		for (MapLayer layer : map) {
 			if (layer instanceof TileLayer) {
-//				 mapRenderer.paintTileLayer((Graphics2D) g, (TileLayer)
-//				 layer);
-
-				for (int x = 0; x < layer.getWidth(); x++) {
-					for (int y = 0; y < layer.getHeight(); y++) {
-						Tile t = ((TileLayer) layer).getTileAt(x, y);
-						if (t != null) {
-							g.drawImage(t.getImage(), x * 64 - Game.xOff, y * 64 - Game.yOff, 64, 64, null);
-						
-							if (t.getProperties().containsKey("collision")) {
-								g.setColor(Color.red);
-								g.fillRect(x * 64 - Game.xOff, y * 64 - Game.yOff, 64, 64);
+				for (int x = (xo / 64); x < (xo / 64) + 17; x++) {
+					for (int y = (yo / 64); y < (yo / 64) + 13; y++) {
+						if(x < layer.getWidth() && y < layer.getHeight()) {
+							Tile t = ((TileLayer) layer).getTileAt(x, y);
+							if (t != null) {
+								g.drawImage(t.getImage(), x * 64 - xo, y * 64 - yo, 64, 64, null);
+							
+								if (t.getProperties().containsKey("collision")) {
+//									g.fillRect(x * 64 - xo, y * 64 - yo, 64, 64);
+								}
 							}
-					
 						}
 					}
 				}
-
 			}
 		}
 
